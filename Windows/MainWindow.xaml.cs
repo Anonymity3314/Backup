@@ -19,9 +19,9 @@ namespace Backup.Windows
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T)
+                if (child is T t)
                 {
-                    yield return (T)child; // 找到元素，返回
+                    yield return t; // 找到元素，返回
                 }
 
                 // 递归查找子元素的子元素
@@ -68,13 +68,13 @@ namespace Backup.Windows
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             AddWindow addWindow = new();
-            addWindow.Show();
+            addWindow.ShowDialog();
         }
 
         // 点击备份按钮备份文件
         private void BackupButton_Click(object sender, RoutedEventArgs e)
         {
-            var checkboxes = FindVisualChildren<CheckBox>(scrollViewer);
+            var checkboxes = FindVisualChildren<System.Windows.Controls.CheckBox>(scrollViewer);
             foreach (var checkbox in checkboxes)
             {
                 if (checkbox.IsChecked == true)
@@ -82,6 +82,13 @@ namespace Backup.Windows
 
                 }
             }
+        }
+
+        // 关闭窗口清理资源
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e); // 先调用基类方法
+            GC.Collect(); // 强制回收内存
         }
     }
 }
