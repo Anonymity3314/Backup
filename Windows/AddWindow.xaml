@@ -10,9 +10,10 @@
     Width="450"
     Height="300"
     Icon="/Anonymity.ico"
-    Title="添加要备份的文件夹"
     ResizeMode="CanMinimize"
     WindowStartupLocation="CenterScreen"
+    
+    Loaded="AddWindow_Loaded"
 >
     <Grid>
         <Label Content="标题" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Width="109" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>

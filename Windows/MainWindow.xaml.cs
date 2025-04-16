@@ -64,11 +64,24 @@ namespace Backup.Windows
             }
         }
 
-        // 点击添加要备份的文件
+        // 点击选择要备份的类型
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            AddWindow addWindow = new();
-            addWindow.ShowDialog();
+            Popup.IsOpen = true; // 打开弹出框
+        }
+
+        // 备份文件
+        private void AddFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddWindow addwindow = new("File");
+            addwindow.ShowDialog();
+        }
+
+        // 备份文件夹
+        private void AddFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddWindow addwindow = new("Folder");
+            addwindow.ShowDialog();
         }
 
         // 点击备份按钮备份文件

@@ -10,16 +10,30 @@
     Width="600"
     Height="400"
     Icon="/Anonymity.ico"
-    Title="请选择要备份的文件夹"
+    Title="请选择要备份的资源"
     WindowStartupLocation="CenterScreen"
 >
     <Grid>
         <Button x:Name="AddButton" Style="{StaticResource WhiteButton}" Height="27" Width="117" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="AddButton_Click" Content="添加类型"/>
-        <Popup/>
-        <Button x:Name="BackupButton" Style="{StaticResource WhiteButton}" Height="27" Width="117" HorizontalAlignment="Left" Margin="449,10,0,0" VerticalAlignment="Top" Click="BackupButton_Click" Content="备份文件"/>
+        <Popup x:Name="Popup" PopupAnimation="Fade" Width="180" Height="65" PlacementTarget="{Binding ElementName=AddButton}" Placement="Bottom" AllowsTransparency="True" StaysOpen="False">
+            <Grid>
+                <Rectangle Fill="White" Margin="5,7">
+                    <Rectangle.Effect>
+                        <DropShadowEffect Color="#FFBBBBBB" Direction="0" BlurRadius="15" RenderingBias="Quality" ShadowDepth="1"/>
+                    </Rectangle.Effect>
+                </Rectangle>
+                <Border Width="170" Background="White" BorderThickness="0" CornerRadius="3" Margin="5">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Height="55">
+                        <Button x:Name="AddFileButton" Width="170" Style="{StaticResource WhiteButton}" Margin="0,3,0,0" Click="AddFileButton_Click" Content="添加文件"/>
+                        <Button x:Name="AddFolderButton" Width="170" Style="{StaticResource WhiteButton}" Click="AddFolderButton_Click" Content="添加文件夹"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Popup>
+        <Button x:Name="BackupButton" Style="{StaticResource WhiteButton}" Height="27" Width="117" HorizontalAlignment="Left" Margin="449,10,0,0" VerticalAlignment="Top" Click="BackupButton_Click" Content="进行备份"/>
         <ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" ScrollChanged="ListViewScrollViewer_ScrollChanged" Margin="0,42,0,0">
             <Grid>
-                <CheckBox Margin="10,10,335,313" Content="保存文件"/>
+                
             </Grid>
         </ScrollViewer>
 

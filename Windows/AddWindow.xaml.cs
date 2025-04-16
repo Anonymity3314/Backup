@@ -4,9 +4,24 @@ namespace Backup.Windows
 {
     public partial class AddWindow : Window
     {
-        public AddWindow()
+        new string Style { get; set; }
+        public AddWindow(string style)
         {
             InitializeComponent();
+            Style = style;
+        }
+
+        // 选择样式
+        private void AddWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(Style == "File")
+            {
+                this.Title = "添加要备份的文件";
+            }
+            else if(Style == "Folder")
+            {
+                this.Title = "添加要备份的文件夹";
+            }
         }
 
         // 关闭添加窗口
@@ -23,31 +38,67 @@ namespace Backup.Windows
 
         private void SourceLocationButton_Click(object sender, RoutedEventArgs e)
         {
-            var folderDialog = new FolderBrowserDialog
+            if (Style == "File")
             {
-                Description = "选择要备份的文件夹",
-                ShowNewFolderButton = true
-            };
+                var fileDialog = new OpenFileDialog
+                {
+                    Multiselect = true
+                };
 
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string[] selectedPaths = fileDialog.FileNames; // 获取选择的文件路径
+                    foreach (string path in selectedPaths)
+                    {
+                        SourceLocationTextBox.Text += path + "\n"; // 显示选择的文件路径
+                    }
+                }
+            }
+            else if (Style == "Folder")
             {
-                string selectedPath = folderDialog.SelectedPath; // 获取选择的文件夹路径
-                SourceLocationTextBox.Text = selectedPath; // 显示选择的文件夹路径
+                var folderDialog = new FolderBrowserDialog
+                {
+                    ShowNewFolderButton = true
+                };
+
+                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string selectedPath = folderDialog.SelectedPath; // 获取选择的文件夹路径
+                    SourceLocationTextBox.Text = selectedPath; // 显示选择的文件夹路径
+                }
             }
         }
 
         private void TargetLocationSelectButton_Click(object sender, RoutedEventArgs e)
         {
-            var folderDialog = new FolderBrowserDialog
+            if (Style == "File")
             {
-                Description = "选择备份目标文件夹",
-                ShowNewFolderButton = true
-            };
+                var fileDialog = new OpenFileDialog
+                {
+                    Multiselect = true
+                };
 
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string[] selectedPaths = fileDialog.FileNames; // 获取选择的文件路径
+                    foreach (string path in selectedPaths)
+                    {
+                        TargetLocationTextBox.Text += path + "\n"; // 显示选择的文件路径
+                    }
+                }
+            }
+            else if (Style == "Folder")
             {
-                string selectedPath = folderDialog.SelectedPath; // 获取选择的文件夹路径
-                TargetLocationTextBox.Text = selectedPath; // 显示选择的文件夹路径
+                var folderDialog = new FolderBrowserDialog
+                {
+                    ShowNewFolderButton = true
+                };
+
+                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string selectedPath = folderDialog.SelectedPath; // 获取选择的文件夹路径
+                    TargetLocationTextBox.Text = selectedPath; // 显示选择的文件夹路径
+                }
             }
         }
     }
