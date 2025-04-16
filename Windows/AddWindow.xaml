@@ -1,0 +1,21 @@
+﻿<Window
+    mc:Ignorable="d"
+    x:Class="Backup.Windows.AddWindow"
+    xmlns:local="clr-namespace:Backup"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    
+    Width="500"
+    Height="300"
+    Icon="/Anonymity.ico"
+    Title="添加要备份的应用"
+    ResizeMode="CanMinimize"
+    WindowStartupLocation="CenterScreen"
+>
+    <Grid>
+        <TextBox Style="{StaticResource RoundedTextBox}" HorizontalAlignment="Left" Margin="80,36,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Button" Style="{StaticResource WhiteButton}" HorizontalAlignment="Left" Margin="421,251,0,0" VerticalAlignment="Top" Width="69"/>
+    </Grid>
+</Window>
