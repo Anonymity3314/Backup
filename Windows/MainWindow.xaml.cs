@@ -112,7 +112,6 @@ namespace Backup.Windows
             }
 
             BackupButton.IsEnabled = false;
-
             try
             {
                 await BackupFilesAsync();
@@ -212,6 +211,7 @@ namespace Backup.Windows
             addwindow.ShowDialog(); // 显示窗口
         }
 
+        // 打开添加文件夹窗口
         private void AddFolderButton_Click(object sender, RoutedEventArgs e)
         {
             AddWindow addwindow = new("Folder"); // 创建添加文件夹窗口
