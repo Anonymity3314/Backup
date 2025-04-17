@@ -43,7 +43,5 @@
 
         <!-- 垂直滚动条 -->
         <ScrollBar Name="VerticalScrollBar" Orientation="Vertical" Visibility="Visible" HorizontalAlignment="Right" ValueChanged="VerticalScrollBar_ValueChanged" Margin="0,42,0,0"/>
-        <!-- 水平滚动条 -->
-        <ScrollBar Name="HorizontalScrollBar" Orientation="Horizontal" Visibility="Visible" VerticalAlignment="Bottom" ValueChanged="HorizontalScrollBar_ValueChanged"/>
     </Grid>
 </Window>

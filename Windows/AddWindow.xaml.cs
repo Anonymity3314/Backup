@@ -6,7 +6,7 @@ namespace Backup.Windows
     public partial class AddWindow : Window
     {
         private readonly FilesDatabase db; //数据库
-        private readonly string style; //窗口类型
+        private string style; //窗口类型
 
         public AddWindow(string style)
         {
@@ -79,22 +79,46 @@ namespace Backup.Windows
         {
             if (style == "File")
             {
-                var fileDialog = new OpenFileDialog { Multiselect = true }; //创建文件对话框
-                if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    foreach (string path in fileDialog.FileNames)
-                    {
-                        SourceLocationTextBox.Text += path + "\n"; //将选择的文件路径添加到文本框中
-                    }
-                }
+                SelectFiles();
             }
             else if (style == "Folder")
             {
-                var folderDialog = new FolderBrowserDialog { ShowNewFolderButton = true }; //创建文件夹对话框
-                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                SelectFolder();
+            }
+            else
+            {
+                var backupData = db.GetFileData(int.Parse(style));
+                if (backupData.Style == "File")
                 {
-                    SourceLocationTextBox.Text = folderDialog.SelectedPath; //选择文件夹路径
+                    SelectFiles();
                 }
+                else if (backupData.Style == "Folder")
+                {
+                    SelectFolder();
+                }
+            }
+        }
+
+        // 选择源文件
+        private void SelectFiles()
+        {
+            var fileDialog = new OpenFileDialog { Multiselect = true };
+            if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                foreach (string path in fileDialog.FileNames)
+                {
+                    SourceLocationTextBox.Text += path + "\n";
+                }
+            }
+        }
+
+        // 选择源文件夹
+        private void SelectFolder()
+        {
+            var folderDialog = new FolderBrowserDialog { ShowNewFolderButton = true };
+            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                SourceLocationTextBox.Text += folderDialog.SelectedPath + "\n";
             }
         }
 

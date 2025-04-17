@@ -9,9 +9,10 @@ namespace Backup.Windows
 {
     public partial class MainWindow : Window
     {
-        private readonly List<FilesDatabase.FileData> selectedFiles = [];
-        private readonly FilesDatabase db;
+        private readonly List<FilesDatabase.FileData> selectedFiles = []; // 选中的文件
+        private readonly FilesDatabase db; // 文件数据库
 
+        // 调用文件复制库
         [DllImport("FileCopy.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void CopyFiles(string sourcePaths, string targetPath, string style, bool cleanTargetFolder);
 
@@ -22,11 +23,13 @@ namespace Backup.Windows
             db.Initialize();
         }
 
+        // 加载要备份的文件列表
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Refresh();
         }
 
+        // 刷新文件列表
         public void Refresh()
         {
             MainStackPanel.Children.Clear();
@@ -37,6 +40,7 @@ namespace Backup.Windows
             }
         }
 
+        // 创建文件项
         private void CreateFileItem(FilesDatabase.FileData file)
         {
             Grid grid = new Grid
@@ -79,6 +83,7 @@ namespace Backup.Windows
             grid.Children.Add(editButton);
         }
 
+        // 备份选中的文件
         private async void BackupButton_Click(object sender, RoutedEventArgs e)
         {
             var checkboxes = FindVisualChildren<System.Windows.Controls.CheckBox>(scrollViewer);
@@ -126,6 +131,7 @@ namespace Backup.Windows
             }
         }
 
+        // 备份文件
         private async Task BackupFilesAsync()
         {
             foreach (var file in selectedFiles)
@@ -150,6 +156,7 @@ namespace Backup.Windows
             });
         }
 
+        // 删除文件
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var button = (System.Windows.Controls.Button)sender;
@@ -158,75 +165,71 @@ namespace Backup.Windows
             MainStackPanel.Children.Remove(button.Parent as Grid);
         }
 
+        // 编辑文件
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            var button = (System.Windows.Controls.Button)sender;
-            int fileID = (int)button.Tag;
-            AddWindow addwindow = new AddWindow(fileID.ToString());
-            addwindow.ShowDialog();
+            var button = (System.Windows.Controls.Button)sender; // 获取按钮
+            int fileID = (int)button.Tag; // 获取文件ID
+            AddWindow addwindow = new(fileID.ToString()); // 创建编辑窗口
+            addwindow.ShowDialog(); // 显示窗口
         }
 
+        // 关闭窗口时释放数据库资源
         protected override void OnClosed(EventArgs e)
         {
-            base.OnClosed(e);
-            GC.Collect();
+            base.OnClosed(e); // 关闭窗口时释放数据库资源
+            GC.Collect(); // 回收内存
         }
 
+        // 递归查找子控件
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
         {
-            if (parent == null) yield break;
+            if (parent == null) yield break; // 终止条件
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
-                var child = VisualTreeHelper.GetChild(parent, i);
+                var child = VisualTreeHelper.GetChild(parent, i); // 枚举子节点
                 if (child is T t)
                 {
-                    yield return t;
+                    yield return t; // 找到符合条件的子节点
                 }
                 foreach (var descendant in FindVisualChildren<T>(child))
                 {
-                    yield return descendant;
+                    yield return descendant; // 递归枚举子孙节点
                 }
             }
         }
 
+        // 打开添加窗口
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            Popup.IsOpen = true;
+            Popup.IsOpen = true; // 打开弹出窗口
         }
 
+        // 关闭添加窗口
         private void AddFileButton_Click(object sender, RoutedEventArgs e)
         {
-            AddWindow addwindow = new AddWindow("File");
-            addwindow.ShowDialog();
+            AddWindow addwindow = new("File"); // 创建添加文件窗口
+            addwindow.ShowDialog(); // 显示窗口
         }
 
         private void AddFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            AddWindow addwindow = new AddWindow("Folder");
-            addwindow.ShowDialog();
+            AddWindow addwindow = new("Folder"); // 创建添加文件夹窗口
+            addwindow.ShowDialog(); // 显示窗口
         }
 
+        // 同步滚动条
         private void VerticalScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            scrollViewer.ScrollToVerticalOffset(VerticalScrollBar.Value);
+            scrollViewer.ScrollToVerticalOffset(VerticalScrollBar.Value); // 同步滚动条
         }
-
-        private void HorizontalScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            scrollViewer.ScrollToHorizontalOffset(HorizontalScrollBar.Value);
-        }
-
         private void ListViewScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             if (scrollViewer != null)
             {
-                VerticalScrollBar.Maximum = scrollViewer.ScrollableHeight;
-                VerticalScrollBar.ViewportSize = scrollViewer.ViewportHeight;
-                VerticalScrollBar.Value = scrollViewer.VerticalOffset;
-
-                HorizontalScrollBar.Maximum = scrollViewer.ScrollableWidth;
-                HorizontalScrollBar.ViewportSize = scrollViewer.ViewportWidth;
-                HorizontalScrollBar.Value = scrollViewer.HorizontalOffset;
+                VerticalScrollBar.Maximum = scrollViewer.ScrollableHeight; // 设置滚动条最大值
+                VerticalScrollBar.ViewportSize = scrollViewer.ViewportHeight; // 设置滚动条可视大小
+                VerticalScrollBar.Value = scrollViewer.VerticalOffset; // 设置滚动条当前值
             }
         }
     }

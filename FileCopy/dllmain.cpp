@@ -6,6 +6,7 @@
 #include <string>
 #include <filesystem>
 #include <vector>
+#include <sstream>
 
 // 声明CopyDirectory函数
 static void CopyDirectory(const std::string& sourceDir, const std::string& targetDir);
@@ -14,9 +15,9 @@ extern "C" FILECOPY_API void CopyFiles(const char* sourcePaths, const char* targ
 {
     try
     {
-        std::string sourcePathsStr = sourcePaths; // 源路径
-        std::string targetPathStr = targetPath; // 目标路径
-        std::string styleStr = style; // 复制方式
+        std::string sourcePathsStr = sourcePaths; // 保存源路径
+        std::string targetPathStr = targetPath; // 保存目标路径
+        std::string styleStr = style; // 保存复制方式
 
         // 如果需要删除目标文件夹，则先删除
         if (cleanTargetFolder)
@@ -27,19 +28,11 @@ extern "C" FILECOPY_API void CopyFiles(const char* sourcePaths, const char* targ
 
         if (styleStr == "File")
         {
-            std::vector<std::string> files; // 文件名列表
-            size_t pos = 0; // 字符串分割位置
-            std::string delimiter = "\n"; // 文件名分隔符
+            std::vector<std::string> files; // 保存文件路径
+            std::istringstream stream(sourcePathsStr); // 读取源路径
+            std::string file; // 保存文件路径
 
-            while ((pos = sourcePathsStr.find(delimiter)) != std::string::npos)
-            {
-                std::string file = sourcePathsStr.substr(0, pos); // 获取文件名
-                files.push_back(file); // 加入文件名列表
-                sourcePathsStr.erase(0, pos + delimiter.length()); // 去掉已复制的文件名
-            }
-            files.push_back(sourcePathsStr); // 最后一个文件
-
-            for (const auto& file : files)
+            while (std::getline(stream, file, '\n'))
             {
                 if (!file.empty() && std::filesystem::exists(file))
                 {
@@ -51,11 +44,16 @@ extern "C" FILECOPY_API void CopyFiles(const char* sourcePaths, const char* targ
         }
         else if (styleStr == "Folder")
         {
-            if (std::filesystem::exists(sourcePathsStr))
+            std::istringstream stream(sourcePathsStr); // 读取源路径
+            std::string sourceFolder; // 保存源文件夹路径
+
+            while (std::getline(stream, sourceFolder, '\n'))
             {
-                std::string sourceFolder = sourcePathsStr; // 获取源文件夹名
-                std::string targetFolder = targetPathStr + "\\" + std::filesystem::path(sourceFolder).filename().string(); // 计算目标文件夹名
-                CopyDirectory(sourceFolder, targetFolder); // 复制文件夹
+                if (!sourceFolder.empty() && std::filesystem::exists(sourceFolder))
+                {
+                    std::string targetFolder = targetPathStr + "\\" + std::filesystem::path(sourceFolder).filename().string(); // 计算目标文件夹路径
+                    CopyDirectory(sourceFolder, targetFolder); // 复制文件夹
+                }
             }
         }
     }
@@ -68,7 +66,8 @@ extern "C" FILECOPY_API void CopyFiles(const char* sourcePaths, const char* targ
 // 定义CopyDirectory函数
 static void CopyDirectory(const std::string& sourceDir, const std::string& targetDir)
 {
-    std::filesystem::create_directories(targetDir); // 先创建目标文件夹
+    std::filesystem::create_directories(targetDir); // 创建目标文件夹
+
     for (const auto& entry : std::filesystem::recursive_directory_iterator(sourceDir))
     {
         const std::filesystem::path& path = entry.path(); // 获取文件或文件夹路径
@@ -76,7 +75,7 @@ static void CopyDirectory(const std::string& sourceDir, const std::string& targe
 
         if (std::filesystem::is_directory(path))
         {
-            std::filesystem::create_directories(targetPath); // 递归创建子文件夹
+            std::filesystem::create_directories(targetPath); // 创建子文件夹
         }
         else
         {
