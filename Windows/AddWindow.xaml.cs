@@ -1,13 +1,18 @@
-﻿using System.Windows;
+﻿using Backup.Database;
+using System.Windows;
 
 namespace Backup.Windows
 {
     public partial class AddWindow : Window
     {
+        private readonly FilesDatabase db; // 数据库
         new string Style { get; set; }
+
         public AddWindow(string style)
         {
             InitializeComponent();
+            db = new FilesDatabase(); // 创建数据库
+            db.Initialize(); // 初始化数据库
             Style = style; // 设置样式
         }
 
@@ -32,19 +37,36 @@ namespace Backup.Windows
             this.Close(); // 关闭添加窗口
         }
 
+        // 如果内容为空，不启用保存按钮
+        private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(SourceLocationTextBox.Text) &&
+                !string.IsNullOrEmpty(TargetLocationTextBox.Text) &&
+                !string.IsNullOrEmpty(TitleTextBox.Text)) // 检查输入是否为空
+            {
+                SaveButton.IsEnabled = true; // 启用保存按钮
+            }
+            else
+            {
+                SaveButton.IsEnabled = false; // 禁用保存按钮
+            }
+        }
+
         // 保存添加信息
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-
+            db.AddFileData(SourceLocationTextBox.Text, TargetLocationTextBox.Text, TitleTextBox.Text); // 添加文件数据
+            this.Close(); // 关闭添加窗口
         }
 
+        // 选择源文件或文件夹
         private void SourceLocationButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Style == "File")
+            if (Style == "File") // 选择文件
             {
                 var fileDialog = new OpenFileDialog
                 {
-                    Multiselect = true
+                    Multiselect = true // 允许多选
                 };
 
                 if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -56,11 +78,11 @@ namespace Backup.Windows
                     }
                 }
             }
-            else if (Style == "Folder")
+            else if (Style == "Folder") // 选择文件夹
             {
                 var folderDialog = new FolderBrowserDialog
                 {
-                    ShowNewFolderButton = true
+                    ShowNewFolderButton = true // 显示新建文件夹按钮
                 };
 
                 if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -71,11 +93,12 @@ namespace Backup.Windows
             }
         }
 
+        // 选择目标文件夹
         private void TargetLocationSelectButton_Click(object sender, RoutedEventArgs e)
         {
             var folderDialog = new FolderBrowserDialog
             {
-                ShowNewFolderButton = true
+                ShowNewFolderButton = true // 显示新建文件夹按钮
             };
 
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)

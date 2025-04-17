@@ -100,7 +100,7 @@ namespace Backup.Windows
             var checkboxes = FindVisualChildren<System.Windows.Controls.CheckBox>(scrollViewer); // 获取所有复选框
             foreach (var checkbox in checkboxes)
             {
-                if (checkbox.IsChecked == true)
+                if (checkbox.IsChecked == true) // 如果复选框被选中
                 {
 
                 }

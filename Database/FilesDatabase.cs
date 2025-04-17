@@ -33,19 +33,31 @@ namespace Backup.Database
         {
             using var connection = new SQLiteConnection(dbPath);
             connection.Open();
+            using var transaction = connection.BeginTransaction();
 
-            string insertQuery = @"
-            INSERT INTO [FilesData] (SourcePath, TargetPath, FileName)
-            VALUES (@SourcePath, @TargetPath, @FileName);";
-            using var command = new SQLiteCommand(insertQuery, connection);
-            command.Parameters.AddWithValue("@SourcePath", sourcePath);
-            command.Parameters.AddWithValue("@TargetPath", targetPath);
-            command.Parameters.AddWithValue("@FileName", fileName);
-            command.ExecuteNonQuery();
+            try
+            {
+                string insertQuery = @"
+                INSERT INTO [FilesData] (SourcePath, TargetPath, FileName)
+                VALUES (@SourcePath, @TargetPath, @FileName);";
+                using var command = new SQLiteCommand(insertQuery, connection);
+                command.Transaction = transaction;
+                command.Parameters.AddWithValue("@SourcePath", sourcePath);
+                command.Parameters.AddWithValue("@TargetPath", targetPath);
+                command.Parameters.AddWithValue("@FileName", fileName);
+                command.ExecuteNonQuery();
+
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
 
         // 获取文件数据
-        public FileData GetFileData(string fileID)
+        public FileData? GetFileData(string fileID)
         {
             using var connection = new SQLiteConnection(dbPath);
             connection.Open();
@@ -104,9 +116,9 @@ namespace Backup.Database
         public class FileData
         {
             public int FileID { get; set; }
-            public string FileName { get; set; }
-            public string SourcePath { get; set; }
-            public string TargetPath { get; set; }
+            public required string FileName { get; set; }
+            public required string SourcePath { get; set; }
+            public required string TargetPath { get; set; }
         }
     }
 }

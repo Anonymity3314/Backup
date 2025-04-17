@@ -9,7 +9,6 @@
     
     Width="600"
     Height="400"
-    Icon="/Anonymity.ico"
     Title="请选择要备份的资源"
     WindowStartupLocation="CenterScreen"
     
