@@ -12,6 +12,8 @@
     Icon="/Anonymity.ico"
     Title="请选择要备份的资源"
     WindowStartupLocation="CenterScreen"
+    
+    Loaded="MainWindow_Loaded"
 >
     <Grid>
         <Button x:Name="AddButton" Style="{StaticResource WhiteButton}" Height="27" Width="117" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="AddButton_Click" Content="添加类型"/>
@@ -32,9 +34,9 @@
         </Popup>
         <Button x:Name="BackupButton" Style="{StaticResource WhiteButton}" Height="27" Width="117" HorizontalAlignment="Left" Margin="449,10,0,0" VerticalAlignment="Top" Click="BackupButton_Click" Content="进行备份"/>
         <ScrollViewer x:Name="scrollViewer" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" ScrollChanged="ListViewScrollViewer_ScrollChanged" Margin="0,42,0,0">
-            <Grid>
+            <StackPanel x:Name="StackPanel">
                 
-            </Grid>
+            </StackPanel>
         </ScrollViewer>
 
         <!-- 垂直滚动条 -->

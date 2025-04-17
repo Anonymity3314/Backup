@@ -8,7 +8,7 @@ namespace Backup.Windows
         public AddWindow(string style)
         {
             InitializeComponent();
-            Style = style;
+            Style = style; // 设置样式
         }
 
         // 选择样式
@@ -16,11 +16,13 @@ namespace Backup.Windows
         {
             if(Style == "File")
             {
-                this.Title = "添加要备份的文件";
+                this.Title = "添加要备份的文件"; // 设置标题
+                DescriptionLabel.Content = "源文件地址"; // 设置描述
             }
             else if(Style == "Folder")
             {
-                this.Title = "添加要备份的文件夹";
+                this.Title = "添加要备份的文件夹"; // 设置标题
+                DescriptionLabel.Content = "源文件夹地址"; // 设置描述
             }
         }
 
@@ -71,34 +73,15 @@ namespace Backup.Windows
 
         private void TargetLocationSelectButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Style == "File")
+            var folderDialog = new FolderBrowserDialog
             {
-                var fileDialog = new OpenFileDialog
-                {
-                    Multiselect = true
-                };
+                ShowNewFolderButton = true
+            };
 
-                if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    string[] selectedPaths = fileDialog.FileNames; // 获取选择的文件路径
-                    foreach (string path in selectedPaths)
-                    {
-                        TargetLocationTextBox.Text += path + "\n"; // 显示选择的文件路径
-                    }
-                }
-            }
-            else if (Style == "Folder")
+            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                var folderDialog = new FolderBrowserDialog
-                {
-                    ShowNewFolderButton = true
-                };
-
-                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    string selectedPath = folderDialog.SelectedPath; // 获取选择的文件夹路径
-                    TargetLocationTextBox.Text = selectedPath; // 显示选择的文件夹路径
-                }
+                string selectedPath = folderDialog.SelectedPath; // 获取选择的文件夹路径
+                TargetLocationTextBox.Text = selectedPath; // 显示选择的文件夹路径
             }
         }
     }

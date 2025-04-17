@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
-using Backup.Windows;
+using Backup.Database;
 using System.Windows;
 
 namespace Backup.Windows
@@ -31,10 +31,20 @@ namespace Backup.Windows
                 }
             }
         }
+        private readonly FilesDatabase db; // 数据库实例
 
         public MainWindow()
         {
             InitializeComponent();
+
+            db = new FilesDatabase(); // 实例化数据库
+            db.Initialize(); // 初始化数据库
+        }
+
+        // 加载要备份的文件项目
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
 
         // 滚动条滚动时同步更新ScrollViewer的滚动条
@@ -87,7 +97,7 @@ namespace Backup.Windows
         // 点击备份按钮备份文件
         private void BackupButton_Click(object sender, RoutedEventArgs e)
         {
-            var checkboxes = FindVisualChildren<System.Windows.Controls.CheckBox>(scrollViewer);
+            var checkboxes = FindVisualChildren<System.Windows.Controls.CheckBox>(scrollViewer); // 获取所有复选框
             foreach (var checkbox in checkboxes)
             {
                 if (checkbox.IsChecked == true)
