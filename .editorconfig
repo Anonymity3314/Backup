@@ -1,4 +1,7 @@
 ﻿[*.cs]
 
-# CS8601: 引用类型赋值可能为 null。
-dotnet_diagnostic.CS8601.severity = silent
+# CS8600: 将 null 字面量或可能为 null 的值转换为非 null 类型。
+dotnet_diagnostic.CS8600.severity = silent
+
+# CA2101: 指定对 P/Invoke 字符串参数进行封送处理
+dotnet_diagnostic.CA2101.severity = silent
