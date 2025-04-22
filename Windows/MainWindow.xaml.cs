@@ -111,7 +111,9 @@ namespace Backup.Windows
                 return;
             }
 
+            TipLabel.Content = "备份中，请勿关闭窗口";
             BackupButton.IsEnabled = false;
+
             try
             {
                 await BackupFilesAsync();
@@ -122,11 +124,9 @@ namespace Backup.Windows
             }
             finally
             {
+                TipLabel.Content = "备份完成！";
                 BackupButton.IsEnabled = true;
-                if (ExitAfterBackupCheckBox.IsChecked == true)
-                {
-                    System.Windows.Application.Current.Shutdown();
-                }
+                if (ExitAfterBackupCheckBox.IsChecked == true) System.Windows.Application.Current.Shutdown();
             }
         }
 
