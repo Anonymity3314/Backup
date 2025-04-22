@@ -90,12 +90,14 @@ namespace Backup.Windows
             selectedFiles.Clear(); // 清空选中的文件
             foreach (var checkbox in checkboxes) // 遍历所有复选框
             {
-                if (checkbox.IsChecked == false) return; // 跳过未选中的文件
-                if (int.TryParse(checkbox.Tag.ToString(), out int fileID)) // 尝试获取文件ID
+                if (checkbox.IsChecked == true)
                 {
-                    var fileData = db.GetFileData(fileID); // 获取文件数据
-                    if (fileData == null) return; // 文件不存在
-                    selectedFiles.Add(fileData); // 添加选中的文件
+                    if (int.TryParse(checkbox.Tag.ToString(), out int fileID)) // 尝试获取文件ID
+                    {
+                        var fileData = db.GetFileData(fileID); // 获取文件数据
+                        if (fileData == null) return; // 文件不存在
+                        selectedFiles.Add(fileData); // 添加选中的文件
+                    }
                 }
             }
 
@@ -107,7 +109,7 @@ namespace Backup.Windows
 
             TipLabel.Content = "备份中，请勿关闭窗口"; // 显示备份提示
             BackupButton.IsEnabled = false; // 禁用备份按钮
-            WindowState = WindowState.Minimized;// 窗口最小化
+            WindowState = WindowState.Minimized; // 窗口最小化
 
             try
             {
@@ -144,11 +146,6 @@ namespace Backup.Windows
                     });
                 }
             }
-
-            Dispatcher.Invoke(() =>
-            {
-                System.Windows.MessageBox.Show("备份完成！", "成功", MessageBoxButton.OK, MessageBoxImage.Information); // 显示备份完成信息
-            });
         }
 
         // 删除文件
