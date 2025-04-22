@@ -43,22 +43,22 @@ namespace Backup.Windows
         // 创建文件项
         private void CreateFileItem(FilesDatabase.FileData file)
         {
-            Grid grid = new Grid
+            Grid grid = new()
             {
                 Height = 24,
                 Margin = new Thickness(0, 5, 0, 0)
             };
-            MainStackPanel.Children.Add(grid);
+            MainStackPanel.Children.Add(grid); // 添加文件项
 
-            System.Windows.Controls.CheckBox checkbox = new System.Windows.Controls.CheckBox
+            System.Windows.Controls.CheckBox checkbox = new()
             {
                 Tag = file.FileID,
                 Content = file.FileName,
                 Margin = new Thickness(10, 0, 158, 0)
             };
-            grid.Children.Add(checkbox);
+            grid.Children.Add(checkbox); // 添加复选框
 
-            System.Windows.Controls.Button deleteButton = new System.Windows.Controls.Button
+            System.Windows.Controls.Button deleteButton = new()
             {
                 Width = 64,
                 Content = "删除",
@@ -67,10 +67,10 @@ namespace Backup.Windows
                 Style = (Style)FindResource("WhiteButton"),
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Left
             };
-            deleteButton.Click += DeleteButton_Click;
-            grid.Children.Add(deleteButton);
+            deleteButton.Click += DeleteButton_Click; // 绑定删除按钮事件
+            grid.Children.Add(deleteButton); // 添加删除按钮
 
-            System.Windows.Controls.Button editButton = new System.Windows.Controls.Button
+            System.Windows.Controls.Button editButton = new()
             {
                 Width = 64,
                 Content = "编辑",
@@ -79,54 +79,50 @@ namespace Backup.Windows
                 Style = (Style)FindResource("WhiteButton"),
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Left
             };
-            editButton.Click += EditButton_Click;
-            grid.Children.Add(editButton);
+            editButton.Click += EditButton_Click; // 绑定编辑按钮事件
+            grid.Children.Add(editButton); // 添加编辑按钮
         }
 
         // 备份选中的文件
         private async void BackupButton_Click(object sender, RoutedEventArgs e)
         {
-            var checkboxes = FindVisualChildren<System.Windows.Controls.CheckBox>(scrollViewer);
-            selectedFiles.Clear();
-
-            foreach (var checkbox in checkboxes)
+            var checkboxes = FindVisualChildren<System.Windows.Controls.CheckBox>(scrollViewer); // 获取所有复选框
+            selectedFiles.Clear(); // 清空选中的文件
+            foreach (var checkbox in checkboxes) // 遍历所有复选框
             {
-                if (checkbox.IsChecked == true)
+                if (checkbox.IsChecked == false) return; // 跳过未选中的文件
+                if (int.TryParse(checkbox.Tag.ToString(), out int fileID)) // 尝试获取文件ID
                 {
-                    int fileID;
-                    if (int.TryParse(checkbox.Tag.ToString(), out fileID))
-                    {
-                        var fileData = db.GetFileData(fileID);
-                        if (fileData != null)
-                        {
-                            selectedFiles.Add(fileData);
-                        }
-                    }
+                    var fileData = db.GetFileData(fileID); // 获取文件数据
+                    if (fileData == null) return; // 文件不存在
+                    selectedFiles.Add(fileData); // 添加选中的文件
                 }
             }
 
             if (selectedFiles.Count == 0)
             {
-                System.Windows.MessageBox.Show("没有选中任何文件！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
+                System.Windows.MessageBox.Show("没有选中任何文件！", "提示", MessageBoxButton.OK, MessageBoxImage.Information); // 提示没有选中文件
+                return; // 退出
             }
 
-            TipLabel.Content = "备份中，请勿关闭窗口";
-            BackupButton.IsEnabled = false;
+            TipLabel.Content = "备份中，请勿关闭窗口"; // 显示备份提示
+            BackupButton.IsEnabled = false; // 禁用备份按钮
+            WindowState = WindowState.Minimized;// 窗口最小化
 
             try
             {
-                await BackupFilesAsync();
+                await BackupFilesAsync(); // 备份文件
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"备份失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show($"备份失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error); // 显示备份失败信息
             }
             finally
             {
-                TipLabel.Content = "备份完成！";
-                BackupButton.IsEnabled = true;
-                if (ExitAfterBackupCheckBox.IsChecked == true) System.Windows.Application.Current.Shutdown();
+                TipLabel.Content = "备份完成！"; // 显示备份完成信息
+                BackupButton.IsEnabled = true; // 启用备份按钮
+                if (ExitAfterBackupCheckBox.IsChecked == true) System.Windows.Application.Current.Shutdown(); // 退出程序
+                WindowState = WindowState.Normal; // 窗口恢复
             }
         }
 
@@ -137,31 +133,31 @@ namespace Backup.Windows
             {
                 try
                 {
-                    Directory.CreateDirectory(file.TargetPath);
-                    await Task.Run(() => CopyFiles(file.SourcePath, file.TargetPath, file.Style, file.CleanTargetFloder));
+                    Directory.CreateDirectory(file.TargetPath); // 创建目标文件夹
+                    await Task.Run(() => CopyFiles(file.SourcePath, file.TargetPath, file.Style, file.CleanTargetFloder)); // 调用文件复制库
                 }
                 catch (Exception ex)
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        System.Windows.MessageBox.Show($"备份文件 {file.FileName} 失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        System.Windows.MessageBox.Show($"备份文件 {file.FileName} 失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error); // 显示备份失败信息
                     });
                 }
             }
 
             Dispatcher.Invoke(() =>
             {
-                System.Windows.MessageBox.Show("备份完成！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                System.Windows.MessageBox.Show("备份完成！", "成功", MessageBoxButton.OK, MessageBoxImage.Information); // 显示备份完成信息
             });
         }
 
         // 删除文件
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var button = (System.Windows.Controls.Button)sender;
-            int fileID = (int)button.Tag;
-            db.DeleteFileData(fileID);
-            MainStackPanel.Children.Remove(button.Parent as Grid);
+            var button = (System.Windows.Controls.Button)sender; // 获取按钮
+            int fileID = (int)button.Tag; // 获取文件ID
+            db.DeleteFileData(fileID); // 删除文件数据
+            MainStackPanel.Children.Remove(button.Parent as Grid); // 删除文件项
         }
 
         // 编辑文件
