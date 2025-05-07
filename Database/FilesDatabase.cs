@@ -5,13 +5,15 @@ namespace Backup.Database
 {
     class FilesDatabase
     {
-        private readonly string dbPath = "Data Source=Backup.db;";
+        // 获取应用程序根目录，并设置数据库文件路径
+        private readonly string dbPath = "Data Source=" + Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Backup.db") + ";";
 
         // 初始化数据库
         public void Initialize()
         {
-            if (File.Exists("Backup.db")) return; // 如果数据库已存在，则不再初始化
-            SQLiteConnection.CreateFile("Backup.db"); // 创建数据库文件
+            string dbFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Backup.db");
+            if (File.Exists(dbFilePath)) return; // 如果数据库已存在，则不再初始化
+            SQLiteConnection.CreateFile(dbFilePath); // 创建数据库文件
 
             using var connection = new SQLiteConnection(dbPath); // 创建数据库连接
             connection.Open(); // 打开数据库连接
