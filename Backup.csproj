@@ -9,8 +9,12 @@
     <UseWindowsForms>True</UseWindowsForms>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <BaseOutputPath>E:\软件\Backup\bin</BaseOutputPath>
+    <BaseOutputPath>E:\Program\Backup\bin</BaseOutputPath>
     <PackageIcon>favicon.png</PackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
