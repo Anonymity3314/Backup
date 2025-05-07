@@ -90,14 +90,12 @@ namespace Backup.Windows
             selectedFiles.Clear(); // 清空选中的文件
             foreach (var checkbox in checkboxes) // 遍历所有复选框
             {
-                if (checkbox.IsChecked == true)
+                if (checkbox.IsChecked != true) continue; // 跳过未选中的文件
+                if (int.TryParse(checkbox.Tag.ToString(), out int fileID)) // 尝试获取文件ID
                 {
-                    if (int.TryParse(checkbox.Tag.ToString(), out int fileID)) // 尝试获取文件ID
-                    {
-                        var fileData = db.GetFileData(fileID); // 获取文件数据
-                        if (fileData == null) return; // 文件不存在
-                        selectedFiles.Add(fileData); // 添加选中的文件
-                    }
+                    var fileData = db.GetFileData(fileID); // 获取文件数据
+                    if (fileData == null) return; // 文件不存在
+                    selectedFiles.Add(fileData); // 添加选中的文件
                 }
             }
 
@@ -170,6 +168,7 @@ namespace Backup.Windows
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e); // 关闭窗口时释放数据库资源
+            MainGrid.Children.Clear(); // 清空窗口内容
             GC.Collect(); // 回收内存
         }
 
@@ -181,9 +180,7 @@ namespace Backup.Windows
             {
                 var child = VisualTreeHelper.GetChild(parent, i); // 枚举子节点
                 if (child is T t)
-                {
                     yield return t; // 找到符合条件的子节点
-                }
                 foreach (var descendant in FindVisualChildren<T>(child))
                 {
                     yield return descendant; // 递归枚举子孙节点

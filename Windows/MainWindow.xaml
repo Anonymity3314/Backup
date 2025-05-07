@@ -15,7 +15,7 @@
     
     Loaded="MainWindow_Loaded"
 >
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Button x:Name="AddButton" Style="{StaticResource WhiteButton}" Height="27" Width="117" HorizontalAlignment="Left" Margin="14,10,0,0" VerticalAlignment="Top" Click="AddButton_Click" Content="添加类型"/>
         <Button x:Name="AddButton复制__C_" Style="{StaticResource WhiteButton}" Height="27" Width="117" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="AddButton_Click" Content="添加类型" Visibility="Hidden"/>
         <Popup x:Name="Popup" PopupAnimation="Fade" Width="180" Height="65" PlacementTarget="{Binding ElementName=AddButton复制__C_}" Placement="Bottom" AllowsTransparency="True" StaysOpen="False">
